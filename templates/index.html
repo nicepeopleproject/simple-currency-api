@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Конвертер валют</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="mt-5 text-center">Конвертер валют</h1>
+        <form id="currencyForm" class="mt-3">
+            <div class="form-group text-center">
+                <label for="currency">Выбери валюту:</label>
+                <select id="currency" name="currency" class="form-control">
+                    <option value="USD">USD - United States Dollar</option>
+                    <option value="EUR">EUR - Euro</option>
+                    <option value="GBP">GBP - British Pound Sterling</option>
+                    <option value="JPY">JPY - Japanese Yen</option>
+                    <option value="AUD">AUD - Australian Dollar</option>
+                    <option value="CNY">CNY - Chinese Yuan</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg btn-block">Получить значение</button>
+        </form>
+        <div id="result" class="mt-3 text-center"></div>
+    </div>
+
+    <script>
+        document.getElementById('currencyForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var currency = document.getElementById('currency').value;
+            fetch('/get_currency_rate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'currency_name': currency
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = '1 ' + data.currency_name + ' = ' + data.rate_to_rub.toFixed(2) + ' RUB';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
